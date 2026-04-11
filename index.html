@@ -54,7 +54,7 @@
 
         <div id="toast" class="toast">Simulation Result Notification</div>
         
-        <!-- SENDER OSI STACK (LEFT) -->
+        <!-- SENDER OSI STACK (TOP LEFT) -->
         <aside id="osi-sender" class="osi-stack left">
             <div class="osi-title" id="sender-title">Sender OS</div>
             <div class="osi-layer" id="sender-7"><span class="layer-num">7</span> Application</div>
@@ -66,8 +66,8 @@
             <div class="osi-layer" id="sender-1"><span class="layer-num">1</span> Physical</div>
         </aside>
 
-        <!-- RECEIVER OSI STACK (RIGHT) -->
-        <aside id="osi-receiver" class="osi-stack right">
+        <!-- RECEIVER OSI STACK (BOTTOM LEFT) -->
+        <aside id="osi-receiver" class="osi-stack left-bottom">
             <div class="osi-title" id="receiver-title">Receiver OS</div>
             <div class="osi-layer" id="receiver-7"><span class="layer-num">7</span> Application</div>
             <div class="osi-layer" id="receiver-6"><span class="layer-num">6</span> Presentation</div>
@@ -76,6 +76,23 @@
             <div class="osi-layer" id="receiver-3"><span class="layer-num">3</span> Network</div>
             <div class="osi-layer" id="receiver-2"><span class="layer-num">2</span> Data Link</div>
             <div class="osi-layer" id="receiver-1"><span class="layer-num">1</span> Physical</div>
+        </aside>
+
+        <!-- PDU ANALYSIS BOX (RIGHT) -->
+        <aside id="pdu-info-box" class="pdu-box right">
+            <div class="pdu-header">
+                <div class="pdu-title"><i class="fa-solid fa-microchip"></i> PDU Analysis <span id="pdu-device-info" class="pdu-device">None</span></div>
+                <div id="pdu-src-dst" class="pdu-route">Src: - | Dst: -</div>
+            </div>
+            <div class="pdu-layers">
+                <div class="pdu-layer" id="pdu-l7"><span class="layer-num">7</span> <span class="layer-desc">Application layer waiting...</span></div>
+                <div class="pdu-layer" id="pdu-l6"><span class="layer-num">6</span> <span class="layer-desc">Presentation layer waiting...</span></div>
+                <div class="pdu-layer" id="pdu-l5"><span class="layer-num">5</span> <span class="layer-desc">Session layer waiting...</span></div>
+                <div class="pdu-layer" id="pdu-l4"><span class="layer-num">4</span> <span class="layer-desc">Transport layer waiting...</span></div>
+                <div class="pdu-layer" id="pdu-l3"><span class="layer-num">3</span> <span class="layer-desc">Network layer waiting...</span></div>
+                <div class="pdu-layer" id="pdu-l2"><span class="layer-num">2</span> <span class="layer-desc">Data Link layer waiting...</span></div>
+                <div class="pdu-layer" id="pdu-l1"><span class="layer-num">1</span> <span class="layer-desc">Physical layer waiting...</span></div>
+            </div>
         </aside>
 
         <!-- CENTERED BOTTOM NARRATOR -->

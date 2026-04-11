@@ -2,15 +2,15 @@ let network = null;
 let nodes = null;
 let edges = null;
 
-const edgesConfig = [
-    { id: 'e1', from: 'internet', to: 'hub' },
-    { id: 'e2', from: 'hub', to: 'fw_cyber' },
-    { id: 'e3', from: 'fw_cyber', to: 'py_server' },
-    { id: 'e4', from: 'fw_cyber', to: 'sw_cyber' },
-    { id: 'e5', from: 'sw_cyber', to: 'ap_cyber' },
-    { id: 'e6', from: 'sw_cyber', to: 'device1_cyber' },
-    { id: 'e7', from: 'ap_cyber', to: 'device2_cyber' }
-];
+    const edgesConfig = [
+        { id: 'e1', from: 'internet', to: 'hub' },
+        { id: 'e2', from: 'hub', to: 'fw_cyber' },
+        { id: 'e3', from: 'fw_cyber', to: 'py_server' },
+        { id: 'e4', from: 'fw_cyber', to: 'sw_cyber' },
+        { id: 'e5', from: 'sw_cyber', to: 'ap_cyber' },
+        { id: 'e6', from: 'sw_cyber', to: 'device1_cyber' },
+        { id: 'e7', from: 'ap_cyber', to: 'device2_cyber' }
+    ];
 
 document.addEventListener('DOMContentLoaded', () => {
     const makeSVG = (svgContent, color, bgColor) => {
@@ -27,14 +27,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const svgWifi = makeSVG('<path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>', '#38bdf8', 'rgba(56,189,248,0.1)');
 
     nodes = new vis.DataSet([
-        { id: 'internet', label: 'INTERNET', shape: 'image', image: svgCloud, font: { color: '#60a5fa' }, size: 35, level: 0 },
-        { id: 'hub', label: 'NETWORK HUB', shape: 'image', image: svgSwitch, font: { color: '#9ca3af' }, size: 30, level: 1 },
-        { id: 'fw_cyber', label: 'FIREWALL', shape: 'image', image: svgShield, font: { color: '#fb7185' }, size: 35, level: 2 },
-        { id: 'py_server', label: 'SERVER', shape: 'image', image: svgServer, font: { color: '#fbbf24' }, size: 35, level: 3 },
-        { id: 'sw_cyber', label: 'CORE SWITCH', shape: 'image', image: svgSwitch, font: { color: '#34d399' }, size: 30, level: 3 },
-        { id: 'ap_cyber', label: 'WIRELESS AP', shape: 'image', image: svgWifi, font: { color: '#38bdf8' }, size: 30, level: 4 },
-        { id: 'device1_cyber', label: 'DESKTOP PC', shape: 'image', image: svgMonitor, font: { color: '#a78bfa' }, size: 30, level: 4 },
-        { id: 'device2_cyber', label: 'LAPTOP', shape: 'image', image: svgLaptop, font: { color: '#a78bfa' }, size: 30, level: 5 }
+        { id: 'internet', label: 'INTERNET', shape: 'image', image: svgCloud, font: { color: '#60a5fa' }, size: 90, level: 0 },
+        { id: 'hub', label: 'NETWORK HUB', shape: 'image', image: svgSwitch, font: { color: '#9ca3af' }, size: 75, level: 1 },
+        { id: 'fw_cyber', label: 'FIREWALL', shape: 'image', image: svgShield, font: { color: '#fb7185' }, size: 90, level: 2 },
+        { id: 'py_server', label: 'SERVER', shape: 'image', image: svgServer, font: { color: '#fbbf24' }, size: 90, level: 3 },
+        { id: 'sw_cyber', label: 'CORE SWITCH', shape: 'image', image: svgSwitch, font: { color: '#34d399' }, size: 75, level: 3 },
+        { id: 'ap_cyber', label: 'WIRELESS AP', shape: 'image', image: svgWifi, font: { color: '#38bdf8' }, size: 75, level: 4 },
+        { id: 'device1_cyber', label: 'DESKTOP PC', shape: 'image', image: svgMonitor, font: { color: '#a78bfa' }, size: 75, level: 4 },
+        { id: 'device2_cyber', label: 'LAPTOP', shape: 'image', image: svgLaptop, font: { color: '#a78bfa' }, size: 75, level: 5 }
     ]);
 
     const defaultColor = 'rgba(255, 255, 255, 0.15)';
@@ -47,11 +47,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('network-container');
     const options = {
         nodes: {
-            font: { face: 'Space Grotesk', size: 11, bold: true, background: 'rgba(10,10,10,0.85)', strokeWidth: 0, vadjust: -5 },
+            font: { face: 'Space Grotesk', size: 18, bold: true, background: 'rgba(10,10,10,0.85)', strokeWidth: 0, vadjust: -5 },
             shadow: { enabled: true, color: 'rgba(59, 130, 246, 0.15)', size: 30, x: 0, y: 0 }
         },
-        layout: { hierarchical: { direction: 'UD', sortMethod: 'directed', nodeSpacing: 280, levelSeparation: 150 } },
-        physics: { enabled: false },
+        layout: {
+            hierarchical: {
+                direction: 'UD',
+                sortMethod: 'directed',
+                levelSeparation: 220,
+                nodeSpacing: 420
+            }
+        },
+        physics: { enabled: false }, // Disabling physics sets exact (x, y) fixed routing!
         interaction: { dragNodes: true, dragView: true, zoomView: true, zoomSpeed: 0.3, hover: true }
     };
     
@@ -146,11 +153,9 @@ function syncPacketPosition() {
         if (!currentPacket.classList.contains('shatter')) {
              currentPacket.style.transition = 'none';
         }
-        currentPacket.style.width = `${24 * scale}px`;
-        currentPacket.style.height = `${24 * scale}px`;
         
         const pt = document.getElementById('packet-dot-text');
-        if (pt) pt.style.fontSize = `${0.75 * scale}rem`;
+        if (pt) pt.style.fontSize = `${0.85 * scale}rem`;
 
         currentPacket.style.left = `${pos.x}px`;
         currentPacket.style.top = `${pos.y}px`;
@@ -244,11 +249,8 @@ function movePacketTo(nodeId, animate) {
     const pos = network.canvasToDOM(network.getPositions([nodeId])[nodeId]);
     const scale = network.getScale();
 
-    currentPacket.style.width = `${24 * scale}px`;
-    currentPacket.style.height = `${24 * scale}px`;
-    
     const pt = document.getElementById('packet-dot-text');
-    if (pt) pt.style.fontSize = `${0.75 * scale}rem`;
+    if (pt) pt.style.fontSize = `${1.4 * scale}rem`;
     
     if (animate) {
         currentPacket.style.transition = 'left 0.6s linear, top 0.6s linear';
@@ -272,6 +274,49 @@ function movePacketTo(nodeId, animate) {
     }, 10);
 }
 
+let currentPduNode = null;
+
+function updatePDUBox(step) {
+    if (!step) return;
+
+    // Update Device Info
+    const pduDevice = document.getElementById('pdu-device-info');
+    const pduRoute = document.getElementById('pdu-src-dst');
+    if (pduDevice) {
+        let nodeRef = nodes.get(step.dotNode);
+        const currentNodeLabel = nodeRef && nodeRef.label !== '' ? nodeRef.label.replace('\n', ' ') : 'Network Sub-Bus';
+        pduDevice.innerText = currentNodeLabel;
+    }
+    if (pduRoute) {
+        pduRoute.innerHTML = `<span style="color:var(--primary)">Src:</span> ${step.srcName} | <span style="color:var(--warning)">Dst:</span> ${step.dstName}`;
+    }
+
+    // Reset layers only if device changes
+    if (currentPduNode !== step.dotNode) {
+        currentPduNode = step.dotNode;
+        document.querySelectorAll('.pdu-layer').forEach(el => {
+            el.classList.remove('active', 'blocked', 'layer-color', 'layer-l1', 'layer-l2', 'layer-l3', 'layer-l4', 'layer-l5', 'layer-l6', 'layer-l7');
+            const descSpan = el.querySelector('.layer-desc');
+            if (descSpan) descSpan.innerText = 'Waiting...';
+        });
+    }
+
+    // Update Active Layer
+    const activeLayerEl = document.getElementById(`pdu-l${step.layer}`);
+    if (activeLayerEl) {
+        if (step.type === 'blocked') {
+            activeLayerEl.classList.add('blocked');
+        } else {
+            activeLayerEl.classList.add('active', 'layer-color', `layer-l${step.layer}`);
+        }
+        
+        const descSpan = activeLayerEl.querySelector('.layer-desc');
+        if (descSpan) {
+            descSpan.innerText = step.msg || 'Processing...';
+        }
+    }
+}
+
 function applyState(isReverse) {
     if (currentStepIdx < 0 || currentStepIdx >= simulationSteps.length) return;
     const step = simulationSteps[currentStepIdx];
@@ -279,40 +324,42 @@ function applyState(isReverse) {
     highlightOSI(step.layer, step.type === 'blocked' ? 'blocked' : 'active', step.stackTarget);
     setNarrator(step.msg, step.type === 'blocked');
     
+    updatePDUBox(step);
+    
     if (step.dotNode) {
         if (!currentPacket) spawnPacket(step.dotNode, step.dotText);
-        else {
-             document.getElementById('packet-dot-text').innerText = step.dotText;
-             currentPacket.classList.remove('shatter');
+        
+        document.getElementById('packet-dot-text').innerText = step.dotText;
+        currentPacket.classList.remove('shatter', 'layer-color', 'layer-l1', 'layer-l2', 'layer-l3', 'layer-l4', 'layer-l5', 'layer-l6', 'layer-l7');
+        currentPacket.classList.add('layer-color', `layer-l${step.layer}`);
              
-             // Update popup Content
-             const popup = document.getElementById('packet-popup');
-             if(popup) {
-                 popup.innerHTML = `
-                    <div class="popup-header ${step.type === 'blocked' ? 'blocked' : step.type === 'finish' ? 'finish' : ''}">
-                        ${step.type === 'blocked' ? '<i class="fa-solid fa-shield-virus"></i> Blocked' : step.type === 'finish' ? '<i class="fa-solid fa-check"></i> Delivered' : '<i class="fa-solid fa-ethernet"></i> In Transit'}
-                    </div>
-                    <div class="popup-body">
-                        <div><span class="lbl-src">SRC</span> ${step.srcName}</div>
-                        <div><span class="lbl-dst">DST</span> ${step.dstName}</div>
-                        <div class="popup-desc">${step.msg}</div>
-                    </div>
-                 `;
-             }
-
-             const slider = document.getElementById('speed-slider');
-             let speedMs = slider ? (3100 - parseInt(slider.value)) : 1000;
-             let animDuration = (speedMs * 0.6) / 1000;
-
-             let animate = step.type === 'hop' || isReverse; // Animate heavily if moving between nodes
-             
-             if (animate) {
-                 currentPacket.style.transition = `left ${animDuration}s linear, top ${animDuration}s linear`;
-             }
-
-             movePacketTo(step.dotNode, animate);
+        // Update popup Content
+        const popup = document.getElementById('packet-popup');
+        if(popup) {
+            popup.innerHTML = `
+                <div class="popup-header ${step.type === 'blocked' ? 'blocked' : step.type === 'finish' ? 'finish' : ''}">
+                    ${step.type === 'blocked' ? '<i class="fa-solid fa-shield-virus"></i> Blocked' : step.type === 'finish' ? '<i class="fa-solid fa-check"></i> Delivered' : '<i class="fa-solid fa-ethernet"></i> In Transit'}
+                </div>
+                <div class="popup-body">
+                    <div><span class="lbl-src">SRC</span> ${step.srcName}</div>
+                    <div><span class="lbl-dst">DST</span> ${step.dstName}</div>
+                    <div class="popup-desc">${step.msg}</div>
+                </div>
+            `;
         }
-    } 
+
+        const slider = document.getElementById('speed-slider');
+        let speedMs = slider ? (3100 - parseInt(slider.value)) : 1000;
+        let animDuration = (speedMs * 0.6) / 1000;
+
+        let animate = step.type === 'hop' || isReverse; // Animate heavily if moving between nodes
+            
+        if (animate) {
+            currentPacket.style.transition = `left ${animDuration}s linear, top ${animDuration}s linear`;
+        }
+
+        movePacketTo(step.dotNode, animate);
+    }
     
     if (step.type === 'blocked') {
         if (currentPacket) {
@@ -375,6 +422,7 @@ window.simulateTraffic = (sourceId, targetId) => {
     currentPacket = null;
     simulationSteps = [];
     currentStepIdx = -1;
+    currentPduNode = null; // Reset PDU tracker for fresh simulations
     
     const path = findPath(sourceId, targetId);
     if (!path) return;
