@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSI Simulation</title>
+    <!-- We load FontAwesome strictly via CDN with correct classes for VisJS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Vis Network -->
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    
+    <!-- Particles JS -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="particles-js"></div>
+    
+    <!-- The Graph Container -->
+    <div id="network-container"></div>
+    
+    <!-- Overlay UI for Packets -->
+    <div id="packets-container"></div>
+
+    <!-- UI Overlay -->
+    <div class="ui-container">
+        <header class="top-bar">
+            <div>
+                <h1>Lab Network <span class="highlight">Simulation</span></h1>
+                <p class="subtitle">Firewall Zoning Layout (Int2 / Int3)</p>
+            </div>
+            
+            <div class="simulation-controls">
+                <button class="btn btn-danger-outline" onclick="simulateTraffic('internet', 'py_server')">
+                    <i class="fa-solid fa-earth-americas"></i> &nbsp;Internet to Internal
+                </button>
+                <button class="btn btn-success" onclick="simulateTraffic('device1_cyber', 'py_server')">
+                    <i class="fa-solid fa-desktop"></i> &nbsp;Internal to Server
+                </button>
+                <button class="btn btn-warning" onclick="simulateTraffic('py_server', 'device1_cyber')">
+                    <i class="fa-solid fa-server"></i> &nbsp;Server to Internal
+                </button>
+                <button class="btn btn-success" onclick="simulateTraffic('device1_cyber', 'internet')">
+                    <i class="fa-solid fa-globe"></i> &nbsp;Internal to Internet
+                </button>
+                <button class="btn btn-neutral" onclick="resetView()">
+                    <i class="fa-solid fa-expand"></i> &nbsp;CENTER
+                </button>
+            </div>
+        </header>
+
+        <div id="toast" class="toast">Simulation Result Notification</div>
+        
+        <!-- SENDER OSI STACK (LEFT) -->
+        <aside id="osi-sender" class="osi-stack left">
+            <div class="osi-title" id="sender-title">Sender OS</div>
+            <div class="osi-layer" id="sender-7"><span class="layer-num">7</span> Application</div>
+            <div class="osi-layer" id="sender-6"><span class="layer-num">6</span> Presentation</div>
+            <div class="osi-layer" id="sender-5"><span class="layer-num">5</span> Session</div>
+            <div class="osi-layer" id="sender-4"><span class="layer-num">4</span> Transport</div>
+            <div class="osi-layer" id="sender-3"><span class="layer-num">3</span> Network</div>
+            <div class="osi-layer" id="sender-2"><span class="layer-num">2</span> Data Link</div>
+            <div class="osi-layer" id="sender-1"><span class="layer-num">1</span> Physical</div>
+        </aside>
+
+        <!-- RECEIVER OSI STACK (RIGHT) -->
+        <aside id="osi-receiver" class="osi-stack right">
+            <div class="osi-title" id="receiver-title">Receiver OS</div>
+            <div class="osi-layer" id="receiver-7"><span class="layer-num">7</span> Application</div>
+            <div class="osi-layer" id="receiver-6"><span class="layer-num">6</span> Presentation</div>
+            <div class="osi-layer" id="receiver-5"><span class="layer-num">5</span> Session</div>
+            <div class="osi-layer" id="receiver-4"><span class="layer-num">4</span> Transport</div>
+            <div class="osi-layer" id="receiver-3"><span class="layer-num">3</span> Network</div>
+            <div class="osi-layer" id="receiver-2"><span class="layer-num">2</span> Data Link</div>
+            <div class="osi-layer" id="receiver-1"><span class="layer-num">1</span> Physical</div>
+        </aside>
+
+        <!-- CENTERED BOTTOM NARRATOR -->
+        <div id="osi-narrator" class="osi-narrator-bottom">
+            <div id="narrator-controls" style="display: flex; align-items: center; gap: 16px;">
+                <div class="speed-control">
+                    <label for="speed-slider"><i class="fa-solid fa-stopwatch"></i> Speed:</label>
+                    <input type="range" id="speed-slider" min="100" max="3000" step="100" value="1000" title="Adjust the simulation speed">
+                </div>
+                <button id="pause-btn" class="control-btn" onclick="window.pauseSimulation()"><i class="fa-solid fa-pause"></i> PAUSE</button>
+                <button id="resume-btn" class="control-btn" onclick="window.resumeSimulation()"><i class="fa-solid fa-play"></i> RESUME</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
