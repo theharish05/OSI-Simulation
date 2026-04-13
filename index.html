@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=5">
+    <link rel="stylesheet" href="style.css?v=6">
 </head>
 <body>
     <div id="particles-js"></div>
@@ -43,8 +43,14 @@
                 <button class="btn btn-warning" onclick="simulateTraffic('py_server', 'device1_cyber')">
                     <i class="fa-solid fa-server"></i> &nbsp;Server to Internal
                 </button>
+                <button class="btn btn-warning" onclick="simulateTraffic('py_server', 'ap_cyber')">
+                    <i class="fa-solid fa-wifi"></i> &nbsp;Server to AP
+                </button>
                 <button class="btn btn-success" onclick="simulateTraffic('device1_cyber', 'internet')">
                     <i class="fa-solid fa-globe"></i> &nbsp;Internal to Internet
+                </button>
+                <button class="btn btn-success" onclick="simulateTraffic('ap_cyber', 'py_server')">
+                    <i class="fa-solid fa-wifi"></i> &nbsp;AP to Server
                 </button>
                 <button class="btn btn-neutral" onclick="resetView()">
                     <i class="fa-solid fa-expand"></i> &nbsp;CENTER
@@ -133,6 +139,6 @@
         </div>
     </div>
     
-    <script src="app.js?v=4"></script>
+    <script src="app.js?v=13"></script>
 </body>
 </html>

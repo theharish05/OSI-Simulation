@@ -51,7 +51,7 @@ body {
 #particles-js {
     position: fixed; width: 100vw; height: 100vh; top: 0; left: 0; z-index: 0;
     background: transparent;
-    pointer-events: none;
+    pointer-events: auto;
 }
 
 body::after {
@@ -69,7 +69,7 @@ body.flash-green::after {
     opacity: 1; transition: opacity 0.1s ease-in;
 }
 
-#network-container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+#network-container { position: absolute; top: 0; left: 25vw; width: 50vw; height: 100%; z-index: 1; }
 
 .vis-network { outline: none; }
 

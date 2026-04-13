@@ -32,10 +32,12 @@ let edges = null;
         'sw_cyber': [
             { dest: '0.0.0.0/0', nextHop: '192.168.1.1', interface: 'Gi0/1', id: 'fw_cyber' },
             { dest: '192.168.1.50/32', nextHop: '192.168.1.50', interface: 'Fa0/1', id: 'device1_cyber' },
+            { dest: '192.168.1.3/32', nextHop: '192.168.1.3', interface: 'Fa0/2', id: 'ap_cyber' },
             { dest: '192.168.1.51/32', nextHop: '192.168.1.3', interface: 'Fa0/2', id: 'ap_cyber' }
         ],
         'ap_cyber': [
             { dest: '0.0.0.0/0', nextHop: '192.168.1.2', interface: 'Uplink', id: 'sw_cyber' },
+            { dest: '192.168.1.3/32', nextHop: 'Local', interface: 'Mgmt', id: 'ap_cyber' },
             { dest: '192.168.1.51/32', nextHop: '192.168.1.51', interface: 'WLAN', id: 'device2_cyber' }
         ]
     };
@@ -56,16 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     nodes = new vis.DataSet([
         { id: 'internet', label: 'INTERNET', shape: 'image', image: svgCloud, font: { color: '#60a5fa' }, size: 90, level: 0 },
-        { id: 'hub', label: 'NETWORK HUB', shape: 'image', image: svgSwitch, font: { color: '#9ca3af' }, size: 75, level: 1 },
-        { id: 'fw_cyber', label: 'FIREWALL', shape: 'image', image: svgShield, font: { color: '#fb7185' }, size: 90, level: 2 },
-        { id: 'py_server', label: 'SERVER', shape: 'image', image: svgServer, font: { color: '#fbbf24' }, size: 90, level: 3 },
-        { id: 'sw_cyber', label: 'CORE SWITCH', shape: 'image', image: svgSwitch, font: { color: '#34d399' }, size: 75, level: 3 },
-        { id: 'ap_cyber', label: 'WIRELESS AP', shape: 'image', image: svgWifi, font: { color: '#38bdf8' }, size: 75, level: 4 },
-        { id: 'device1_cyber', label: 'DESKTOP PC', shape: 'image', image: svgMonitor, font: { color: '#a78bfa' }, size: 75, level: 4 },
-        { id: 'device2_cyber', label: 'LAPTOP', shape: 'image', image: svgLaptop, font: { color: '#a78bfa' }, size: 75, level: 5 }
+        { id: 'hub', label: `NETWORK HUB\n${nodeIPs['hub']}`, shape: 'image', image: svgSwitch, font: { color: '#9ca3af' }, size: 75, level: 1 },
+        { id: 'fw_cyber', label: `FIREWALL\n${nodeIPs['fw_cyber']}`, shape: 'image', image: svgShield, font: { color: '#fb7185' }, size: 90, level: 2 },
+        { id: 'py_server', label: `SERVER\n${nodeIPs['py_server']}`, shape: 'image', image: svgServer, font: { color: '#fbbf24' }, size: 90, level: 3 },
+        { id: 'sw_cyber', label: `CORE SWITCH\n${nodeIPs['sw_cyber']}`, shape: 'image', image: svgSwitch, font: { color: '#34d399' }, size: 75, level: 3 },
+        { id: 'ap_cyber', label: `WIRELESS AP\n${nodeIPs['ap_cyber']}`, shape: 'image', image: svgWifi, font: { color: '#38bdf8' }, size: 75, level: 4 },
+        { id: 'device1_cyber', label: `DESKTOP PC\n${nodeIPs['device1_cyber']}`, shape: 'image', image: svgMonitor, font: { color: '#a78bfa' }, size: 75, level: 4 },
+        { id: 'device2_cyber', label: `LAPTOP\n${nodeIPs['device2_cyber']}`, shape: 'image', image: svgLaptop, font: { color: '#a78bfa' }, size: 75, level: 5 }
     ]);
 
-    const defaultColor = 'rgba(255, 255, 255, 0.15)';
+    const defaultColor = 'rgba(255, 255, 255, 0.85)';
     edges = new vis.DataSet(edgesConfig.map(e => ({
         id: e.id, from: e.from, to: e.to,
         color: { color: defaultColor, highlight: '#3b82f6' },
@@ -98,17 +100,18 @@ document.addEventListener('DOMContentLoaded', () => {
     if (window.particlesJS) {
         particlesJS("particles-js", {
             "particles": {
-                "number": { "value": 70, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#4b8bf5" },
+                "number": { "value": 100, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#ffffff" },
                 "shape": { "type": "circle" },
-                "opacity": { "value": 0.4, "random": true, "anim": { "enable": true, "speed": 1, "opacity_min": 0.1, "sync": false } },
+                "opacity": { "value": 0.5, "random": false, "anim": { "enable": false } },
                 "size": { "value": 3, "random": true, "anim": { "enable": false } },
-                "line_linked": { "enable": true, "distance": 150, "color": "#4b8bf5", "opacity": 0.15, "width": 1.5 },
-                "move": { "enable": true, "speed": 1.5, "direction": "none", "random": true, "straight": false, "out_mode": "out", "bounce": false }
+                "line_linked": { "enable": true, "distance": 150, "color": "#ffffff", "opacity": 0.4, "width": 1 },
+                "move": { "enable": true, "speed": 3, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
             },
             "interactivity": {
                 "detect_on": "canvas",
-                "events": { "onhover": { "enable": false }, "onclick": { "enable": false }, "resize": true }
+                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
+                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "push": { "particles_nb": 4 } }
             },
             "retina_detect": true
         });
@@ -185,6 +188,8 @@ function syncPacketPosition() {
     try {
         const pos = network.canvasToDOM(network.getPositions([activePacketNode])[activePacketNode]);
         const scale = network.getScale();
+        const container = document.getElementById('network-container');
+        const offsetX = container ? container.getBoundingClientRect().left : 0;
         
         if (!currentPacket.classList.contains('shatter')) {
              currentPacket.style.transition = 'none';
@@ -196,7 +201,7 @@ function syncPacketPosition() {
             pt.style.fontSize = `${baseFontSize * scale}rem`;
         }
 
-        currentPacket.style.left = `${pos.x}px`;
+        currentPacket.style.left = `${pos.x + offsetX}px`;
         currentPacket.style.top = `${pos.y}px`;
     } catch (e) {}
 }
@@ -311,7 +316,9 @@ function movePacketTo(nodeId, animate) {
     
     setTimeout(() => {
          if(!currentPacket) return;
-         currentPacket.style.left = `${pos.x}px`;
+         const container = document.getElementById('network-container');
+         const offsetX = container ? container.getBoundingClientRect().left : 0;
+         currentPacket.style.left = `${pos.x + offsetX}px`;
          currentPacket.style.top = `${pos.y}px`;
     }, 10);
 }
@@ -364,6 +371,18 @@ function updatePDUBox(step) {
     }
 }
 
+function clearRoutingPanel() {
+    const rtTitle = document.getElementById('rt-device-name');
+    const rtBody = document.getElementById('rt-body');
+    if (rtTitle) rtTitle.innerText = 'Idle';
+    if (rtBody) {
+        rtBody.innerHTML = `
+            <tr class="rt-row"><td style="color:var(--text-muted);">--</td><td style="color:var(--text-muted);">--</td><td style="color:var(--text-muted);">--</td></tr>
+            <tr class="rt-row"><td style="color:var(--text-muted);">--</td><td style="color:var(--text-muted);">--</td><td style="color:var(--text-muted);">--</td></tr>
+        `;
+    }
+}
+
 function updateRoutingPanel(nodeId, targetIP) {
     const rtPanel = document.getElementById('routing-table-box');
     const rtTitle = document.getElementById('rt-device-name');
@@ -375,12 +394,12 @@ function updateRoutingPanel(nodeId, targetIP) {
     if (table.length === 0) {
         // Keep the last active table visible for context, but mark the device
         const nodeRef = nodes.get(nodeId);
-        if (nodeRef) rtTitle.innerHTML = `${nodeRef.label.replace('\n', ' ')} <span style="font-size:0.6rem; color:var(--text-muted); opacity:0.8;">(N/A)</span>`;
+        if (nodeRef) rtTitle.innerHTML = `${nodeRef.label.split('\n')[0]} <span style="font-size:0.6rem; color:var(--text-muted); opacity:0.8;">(N/A)</span>`;
         return;
     }
 
     const nodeRef = nodes.get(nodeId);
-    rtTitle.innerText = nodeRef ? nodeRef.label.replace('\n', ' ') : 'Unknown';
+    rtTitle.innerText = nodeRef ? nodeRef.label.split('\n')[0] : 'Unknown';
     rtBody.innerHTML = '';
 
     table.forEach(entry => {
@@ -412,11 +431,17 @@ function applyState(isReverse) {
     
     updatePDUBox(step);
 
-    // Toggle Routing Table Highlight
+    // Toggle Routing Table Highlight and Values
     const rtBox = document.getElementById('routing-table-box');
     if (rtBox) {
-        if (step.layer === 3) rtBox.classList.add('l3-active');
-        else rtBox.classList.remove('l3-active');
+        // Always populate the table with the current node's data so the user has time to read it!
+        updateRoutingPanel(step.dotNode, step.dstIP);
+        
+        if (step.layer === 3) {
+            rtBox.classList.add('l3-active');
+        } else {
+            rtBox.classList.remove('l3-active');
+        }
     }
     
     if (step.dotNode) {
@@ -530,7 +555,8 @@ window.simulateTraffic = (sourceId, targetId) => {
         isBlocked = true;
         for (let i = 0; i < path.length; i++) { if (path[i] === 'fw_cyber') { blockIndex = i; break; } }
     } else if (sourceId === 'py_server') {
-        if (targetId !== 'py_server') {
+        // Block external internet bound traffic, but allow internal 192.168.1.0/24 traffic
+        if (targetId === 'internet' || targetId === 'hub') {
             isBlocked = true;
             for (let i = 0; i < path.length; i++) { if (path[i] === 'fw_cyber') { blockIndex = i; break; } }
         }
