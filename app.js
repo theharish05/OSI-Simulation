@@ -12,6 +12,34 @@ let edges = null;
         { id: 'e7', from: 'ap_cyber', to: 'device2_cyber' }
     ];
 
+    const nodeIPs = {
+        'internet': '140.82.121.3',
+        'hub': '10.0.0.1',
+        'fw_cyber': '192.168.1.1',
+        'py_server': '10.0.0.10',
+        'sw_cyber': '192.168.1.2',
+        'ap_cyber': '192.168.1.3',
+        'device1_cyber': '192.168.1.50',
+        'device2_cyber': '192.168.1.51'
+    };
+
+    const routingTables = {
+        'fw_cyber': [
+            { dest: '0.0.0.0/0', nextHop: '10.0.0.1', interface: 'WAN', id: 'internet' },
+            { dest: '192.168.1.0/24', nextHop: '192.168.1.2', interface: 'LAN', id: 'sw_cyber' },
+            { dest: '10.0.0.10/32', nextHop: '10.0.0.10', interface: 'DMZ', id: 'py_server' }
+        ],
+        'sw_cyber': [
+            { dest: '0.0.0.0/0', nextHop: '192.168.1.1', interface: 'Gi0/1', id: 'fw_cyber' },
+            { dest: '192.168.1.50/32', nextHop: '192.168.1.50', interface: 'Fa0/1', id: 'device1_cyber' },
+            { dest: '192.168.1.51/32', nextHop: '192.168.1.3', interface: 'Fa0/2', id: 'ap_cyber' }
+        ],
+        'ap_cyber': [
+            { dest: '0.0.0.0/0', nextHop: '192.168.1.2', interface: 'Uplink', id: 'sw_cyber' },
+            { dest: '192.168.1.51/32', nextHop: '192.168.1.51', interface: 'WLAN', id: 'device2_cyber' }
+        ]
+    };
+
 document.addEventListener('DOMContentLoaded', () => {
     const makeSVG = (svgContent, color, bgColor) => {
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24"><g fill="none" stroke="${color}" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">${svgContent}</g></svg>`;
@@ -90,6 +118,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
         if (network) network.fit();
     });
+
+    // Initialize Routing Table with Firewall entries
+    setTimeout(() => updateRoutingPanel('fw_cyber', '10.0.0.10'), 500);
 });
 
 window.resetView = () => {
@@ -325,7 +356,51 @@ function updatePDUBox(step) {
         if (descSpan) {
             descSpan.innerText = step.msg || 'Processing...';
         }
+
+        // Trigger Routing Table Update if at a layer 3 processing step
+        if (step.layer === 3) {
+            updateRoutingPanel(step.dotNode, step.dstIP);
+        }
     }
+}
+
+function updateRoutingPanel(nodeId, targetIP) {
+    const rtPanel = document.getElementById('routing-table-box');
+    const rtTitle = document.getElementById('rt-device-name');
+    const rtBody = document.getElementById('rt-body');
+    
+    if (!rtPanel || !rtTitle || !rtBody) return;
+
+    const table = routingTables[nodeId] || [];
+    if (table.length === 0) {
+        // Keep the last active table visible for context, but mark the device
+        const nodeRef = nodes.get(nodeId);
+        if (nodeRef) rtTitle.innerHTML = `${nodeRef.label.replace('\n', ' ')} <span style="font-size:0.6rem; color:var(--text-muted); opacity:0.8;">(N/A)</span>`;
+        return;
+    }
+
+    const nodeRef = nodes.get(nodeId);
+    rtTitle.innerText = nodeRef ? nodeRef.label.replace('\n', ' ') : 'Unknown';
+    rtBody.innerHTML = '';
+
+    table.forEach(entry => {
+        const row = document.createElement('tr');
+        row.className = 'rt-row';
+        
+        // Match logic based on upcoming path step
+        const currentSimStep = simulationSteps[currentStepIdx];
+        const nextNode = currentSimStep ? simulationSteps.find((s, i) => i > currentStepIdx && s.type === 'hop')?.dotNode : null;
+        const matchesCurrentPath = entry.id === nextNode;
+
+        if (matchesCurrentPath) row.classList.add('highlight');
+
+        row.innerHTML = `
+            <td>${entry.dest}</td>
+            <td>${entry.nextHop}</td>
+            <td>${entry.interface}</td>
+        `;
+        rtBody.appendChild(row);
+    });
 }
 
 function applyState(isReverse) {
@@ -336,6 +411,13 @@ function applyState(isReverse) {
     setNarrator(step.msg, step.type === 'blocked');
     
     updatePDUBox(step);
+
+    // Toggle Routing Table Highlight
+    const rtBox = document.getElementById('routing-table-box');
+    if (rtBox) {
+        if (step.layer === 3) rtBox.classList.add('l3-active');
+        else rtBox.classList.remove('l3-active');
+    }
     
     if (step.dotNode) {
         if (!currentPacket) spawnPacket(step.dotNode, step.dotText);
@@ -438,6 +520,9 @@ window.simulateTraffic = (sourceId, targetId) => {
     const path = findPath(sourceId, targetId);
     if (!path) return;
 
+    const srcIP = nodeIPs[sourceId];
+    const dstIP = nodeIPs[targetId];
+
     let blockIndex = -1;
     let isBlocked = false;
 
@@ -463,7 +548,7 @@ window.simulateTraffic = (sourceId, targetId) => {
         simulationSteps.push({
             type: 'layer', stackTarget: 'sender', layer: i, dotNode: sourceId, dotText: `L${i}`,
             msg: getLayerDownDescription(i, sourceId, targetId),
-            srcName: sName, dstName: tName
+            srcName: sName, dstName: tName, dstIP: dstIP
         });
     }
 
@@ -478,20 +563,20 @@ window.simulateTraffic = (sourceId, targetId) => {
 
         simulationSteps.push({ 
             type: 'hop', stackTarget: 'sender', layer: hopLayer, dotNode: n2, dotText: dotText, msg: hopMsg,
-            srcName: sName, dstName: tName
+            srcName: sName, dstName: tName, dstIP: dstIP
         });
         currentNode = n2;
     }
 
     // Blocked vs Receiver
     if (isBlocked) {
-        simulationSteps.push({ type: 'blocked', stackTarget: 'sender', layer: 3, dotNode: currentNode, dotText: 'X', msg: `[DENIED] Layer 3 Firewall rejects the packet! The IP/Port combination violates strict security rules. Packet dropped!`, srcName: sName, dstName: tName });
+        simulationSteps.push({ type: 'blocked', stackTarget: 'sender', layer: 3, dotNode: currentNode, dotText: 'X', msg: `[DENIED] Layer 3 Firewall rejects the packet! The IP/Port combination violates strict security rules. Packet dropped!`, srcName: sName, dstName: tName, dstIP: dstIP });
     } else {
         for(let i=1; i<=7; i++) {
             simulationSteps.push({
                 type: i === 7 ? 'finish' : 'layer', stackTarget: 'receiver', layer: i, dotNode: currentNode, dotText: `L${i}`,
                 msg: getLayerUpDescription(i, targetId),
-                srcName: sName, dstName: tName
+                srcName: sName, dstName: tName, dstIP: dstIP
             });
         }
     }

@@ -14,7 +14,7 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
     <div id="particles-js"></div>
@@ -78,22 +78,47 @@
             <div class="osi-layer" id="receiver-1"><span class="layer-num">1</span> Physical</div>
         </aside>
 
-        <!-- PDU ANALYSIS BOX (RIGHT) -->
-        <aside id="pdu-info-box" class="pdu-box right">
-            <div class="pdu-header">
-                <div class="pdu-title"><i class="fa-solid fa-microchip"></i> PDU Analysis <span id="pdu-device-info" class="pdu-device">None</span></div>
-                <div id="pdu-src-dst" class="pdu-route">Src: - | Dst: -</div>
-            </div>
-            <div class="pdu-layers">
-                <div class="pdu-layer" id="pdu-l7"><span class="layer-num">7</span> <span class="layer-desc">Application layer waiting...</span></div>
-                <div class="pdu-layer" id="pdu-l6"><span class="layer-num">6</span> <span class="layer-desc">Presentation layer waiting...</span></div>
-                <div class="pdu-layer" id="pdu-l5"><span class="layer-num">5</span> <span class="layer-desc">Session layer waiting...</span></div>
-                <div class="pdu-layer" id="pdu-l4"><span class="layer-num">4</span> <span class="layer-desc">Transport layer waiting...</span></div>
-                <div class="pdu-layer" id="pdu-l3"><span class="layer-num">3</span> <span class="layer-desc">Network layer waiting...</span></div>
-                <div class="pdu-layer" id="pdu-l2"><span class="layer-num">2</span> <span class="layer-desc">Data Link layer waiting...</span></div>
-                <div class="pdu-layer" id="pdu-l1"><span class="layer-num">1</span> <span class="layer-desc">Physical layer waiting...</span></div>
-            </div>
-        </aside>
+        <!-- RIGHT SIDEBAR WRAPPER -->
+        <div class="right-sidebar">
+            <!-- ROUTING TABLE PANEL (TOP) -->
+            <aside id="routing-table-box" class="routing-box right">
+                <div class="routing-header">
+                    <div class="routing-title"><i class="fa-solid fa-route"></i> Routing Table: <span id="rt-device-name">None</span></div>
+                    <div class="routing-subtitle">Active Path Selection Logic</div>
+                </div>
+                <div class="routing-content">
+                    <table class="rt-table">
+                        <thead>
+                            <tr>
+                                <th>Destination</th>
+                                <th>Next Hop</th>
+                                <th>Interface</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rt-body">
+                            <!-- Entries injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </aside>
+
+            <!-- PDU ANALYSIS BOX (BOTTOM) -->
+            <aside id="pdu-info-box" class="pdu-box right">
+                <div class="pdu-header">
+                    <div class="pdu-title"><i class="fa-solid fa-microchip"></i> PDU Analysis <span id="pdu-device-info" class="pdu-device">None</span></div>
+                    <div id="pdu-src-dst" class="pdu-route">Src: - | Dst: -</div>
+                </div>
+                <div class="pdu-layers">
+                    <div class="pdu-layer" id="pdu-l7"><span class="layer-num">7</span> <span class="layer-desc">Application layer waiting...</span></div>
+                    <div class="pdu-layer" id="pdu-l6"><span class="layer-num">6</span> <span class="layer-desc">Presentation layer waiting...</span></div>
+                    <div class="pdu-layer" id="pdu-l5"><span class="layer-num">5</span> <span class="layer-desc">Session layer waiting...</span></div>
+                    <div class="pdu-layer" id="pdu-l4"><span class="layer-num">4</span> <span class="layer-desc">Transport layer waiting...</span></div>
+                    <div class="pdu-layer" id="pdu-l3"><span class="layer-num">3</span> <span class="layer-desc">Network layer waiting...</span></div>
+                    <div class="pdu-layer" id="pdu-l2"><span class="layer-num">2</span> <span class="layer-desc">Data Link layer waiting...</span></div>
+                    <div class="pdu-layer" id="pdu-l1"><span class="layer-num">1</span> <span class="layer-desc">Physical layer waiting...</span></div>
+                </div>
+            </aside>
+        </div>
 
         <!-- CENTERED BOTTOM NARRATOR -->
         <div id="osi-narrator" class="osi-narrator-bottom">
@@ -108,6 +133,6 @@
         </div>
     </div>
     
-    <script src="app.js"></script>
+    <script src="app.js?v=4"></script>
 </body>
 </html>
