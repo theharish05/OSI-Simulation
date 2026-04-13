@@ -85,6 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
             "retina_detect": true
         });
     }
+
+    // Auto-fit on window resize for responsiveness
+    window.addEventListener('resize', () => {
+        if (network) network.fit();
+    });
 });
 
 window.resetView = () => {
@@ -155,7 +160,10 @@ function syncPacketPosition() {
         }
         
         const pt = document.getElementById('packet-dot-text');
-        if (pt) pt.style.fontSize = `${0.85 * scale}rem`;
+        if (pt) {
+            const baseFontSize = window.innerWidth > 2000 ? 1.8 : 1.25;
+            pt.style.fontSize = `${baseFontSize * scale}rem`;
+        }
 
         currentPacket.style.left = `${pos.x}px`;
         currentPacket.style.top = `${pos.y}px`;
@@ -250,7 +258,10 @@ function movePacketTo(nodeId, animate) {
     const scale = network.getScale();
 
     const pt = document.getElementById('packet-dot-text');
-    if (pt) pt.style.fontSize = `${1.4 * scale}rem`;
+    if (pt) {
+        const baseFontSize = window.innerWidth > 2000 ? 1.8 : 1.25;
+        pt.style.fontSize = `${baseFontSize * scale}rem`;
+    }
     
     if (animate) {
         currentPacket.style.transition = 'left 0.6s linear, top 0.6s linear';
